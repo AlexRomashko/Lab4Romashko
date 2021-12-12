@@ -21,13 +21,17 @@ import javax.swing.event.MenuListener;
 
 public class MainFrame extends JFrame {
     // Начальные размеры окна приложения
+
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
+
     // Объект диалогового окна для выбора файлов
     private JFileChooser fileChooser = null;
     // Пункты меню
     private JCheckBoxMenuItem showAxisMenuItem;
     private JCheckBoxMenuItem showMarkersMenuItem;
+    private JCheckBoxMenuItem showAxisSegmentsMenuItem;
+
     // Компонент-отображатель графика
     private GraphicsDisplay display = new GraphicsDisplay();
     // Флаг, указывающий на загруженность данных графика
@@ -43,12 +47,15 @@ public class MainFrame extends JFrame {
                 (kit.getScreenSize().height - HEIGHT)/2);
 // Развѐртывание окна на весь экран
         setExtendedState(MAXIMIZED_BOTH);
+
 // Создать и установить полосу меню
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
+
 // Добавить пункт меню "Файл"
         JMenu fileMenu = new JMenu("Файл");
         menuBar.add(fileMenu);
+
 // Создать действие по открытию файла
         Action openGraphicsAction = new AbstractAction("Открыть файл с графиком") {
         public void actionPerformed(ActionEvent event) {
@@ -56,13 +63,12 @@ public class MainFrame extends JFrame {
                 fileChooser = new JFileChooser();
                 fileChooser.setCurrentDirectory(new File("."));
             }
-            if (fileChooser.showOpenDialog(MainFrame.this) ==
-                    JFileChooser.APPROVE_OPTION)
-                openGraphics(fileChooser.getSelectedFile());
+            if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) openGraphics(fileChooser.getSelectedFile());
         }
     };
 // Добавить соответствующий элемент меню
      fileMenu.add(openGraphicsAction);
+
     // Создать пункт меню "График"
     JMenu graphicsMenu = new JMenu("График");
      menuBar.add(graphicsMenu);
@@ -74,12 +80,13 @@ public class MainFrame extends JFrame {
         display.setShowAxis(showAxisMenuItem.isSelected());
     }
 };
-showAxisMenuItem = new JCheckBoxMenuItem(showAxisAction);
+        showAxisMenuItem = new JCheckBoxMenuItem(showAxisAction);
 // Добавить соответствующий элемент в меню
         graphicsMenu.add(showAxisMenuItem);
-// Элемент по умолчанию включен (отмечен флажком)
+        // Элемент по умолчанию включен (отмечен флажком)
         showAxisMenuItem.setSelected(true);
-// Повторить действия для элемента "Показывать маркеры точек"
+
+// Добавляем действия для элемента "Показывать маркеры точек"
         Action showMarkersAction = new AbstractAction("Показывать маркеры точек") {
 public void actionPerformed(ActionEvent event) {
 // по аналогии с showAxisMenuItem
@@ -90,6 +97,19 @@ public void actionPerformed(ActionEvent event) {
         graphicsMenu.add(showMarkersMenuItem);
 // Элемент по умолчанию включен (отмечен флажком)
         showMarkersMenuItem.setSelected(true);
+
+        // Добавлям действия для элемента "Показывать маркеры точек"
+        Action showAxisSegmentsAction = new AbstractAction("Показывать деления") {
+            public void actionPerformed(ActionEvent event) {
+                display.setShowAxisSegments(showAxisSegmentsMenuItem.isSelected());
+            }
+        };
+        showAxisSegmentsMenuItem = new JCheckBoxMenuItem(showAxisSegmentsAction);
+        graphicsMenu.add(showAxisSegmentsMenuItem);
+        // Элемент по умолчанию включен (отмечен флажком)
+        showAxisSegmentsMenuItem.setSelected(true);
+
+
 // Зарегистрировать обработчик событий, связанных с меню "График"
         graphicsMenu.addMenuListener(new GraphicsMenuListener());
 // Установить GraphicsDisplay в цент граничной компоновки
@@ -153,6 +173,7 @@ private class GraphicsMenuListener implements MenuListener {
 // Доступность или недоступность элементов меню "График" определяется загруженностью данных
         showAxisMenuItem.setEnabled(fileLoaded);
         showMarkersMenuItem.setEnabled(fileLoaded);
+        showAxisSegmentsMenuItem.setEnabled(fileLoaded);
     }
     // Обработчик, вызываемый после того, как меню исчезло с экрана
     public void menuDeselected(MenuEvent e) {
