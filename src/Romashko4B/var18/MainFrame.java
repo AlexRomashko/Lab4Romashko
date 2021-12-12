@@ -21,7 +21,6 @@ import javax.swing.event.MenuListener;
 
 public class MainFrame extends JFrame {
     // Начальные размеры окна приложения
-
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
 
@@ -118,10 +117,11 @@ public void actionPerformed(ActionEvent event) {
 // Считывание данных графика из существующего файла
 protected void openGraphics(File selectedFile) {
         try {
-// Шаг 1 - Открыть поток чтения данных, связанный с входным файловым потоком
+// Открыть поток чтения данных, связанный с входным файловым потоком
         DataInputStream in = new DataInputStream(new
         FileInputStream(selectedFile));
-/* Шаг 2 - Зная объѐм данных в потоке ввода можно вычислить,
+
+/* Зная объѐм данных в потоке ввода можно вычислить,
 * сколько памяти нужно зарезервировать в массиве:
 * Всего байт в потоке - in.available() байт;
 * Размер одного числа Double - Double.SIZE бит, или
@@ -131,7 +131,7 @@ Double.SIZE/8 байт;
 */
         Double[][] graphicsData = new
         Double[in.available()/(Double.SIZE/8)/2][];
-// Шаг 3 - Цикл чтения данных (пока в потоке есть данные)
+// Цикл чтения данных (пока в потоке есть данные)
         int i = 0;
         while (in.available()>0) {
 // Первой из потока читается координата точки X
@@ -141,14 +141,14 @@ Double.SIZE/8 байт;
 // Прочитанная пара координат добавляется в массив
         graphicsData[i++] = new Double[] {x, y};
         }
-// Шаг 4 - Проверка, имеется ли в списке в результате чтения хотя бы одна пара координат
+// Проверка, имеется ли в списке в результате чтения хотя бы одна пара координат
         if (graphicsData!=null && graphicsData.length>0) {
 // Да - установить флаг загруженности данных
         fileLoaded = true;
 // Вызывать метод отображения графика
         display.showGraphics(graphicsData);
         }
-// Шаг 5 - Закрыть входной поток
+// Закрыть входной поток
         in.close();
         } catch (FileNotFoundException ex) {
 // В случае исключительной ситуации типа "Файл не найден" показать сообщение об ошибке
